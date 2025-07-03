@@ -5,7 +5,7 @@ pipeline {
     stages{
         stage('App code checkout'){
             steps{
-                git url: 'https://github.com/DhruvinSojitra/jenkins.git', branch:'master'
+                git url: 'https://github.com/DhruvinSojitra/Jenkins-project.git', branch:'main'
             }
         }
         stage('Build image'){
