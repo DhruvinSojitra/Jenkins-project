@@ -16,12 +16,12 @@ pipeline {
         }
         stage('Build image'){
             steps{
-                sh "docker build -t ${parames:ImageName}:${parames.ImageTag} ."
+                sh "docker build -t ${params:ImageName}:${params.ImageTag} ."
             }
         }
         stage('container create') {
             steps{
-                sh "docker run -dit --name ${parames.ContainerName} -p  ${parames.ContainerPort}:80  ${parames:ImageName}"
+                sh "docker run -dit --name ${params.ContainerName} -p  ${params.ContainerPort}:80  ${params:ImageName}"
             }
         }
     }
