@@ -13,6 +13,9 @@ pipeline {
         string(name: 'ContainerPort', defaultValue:'8088')
         string(name: 'ContainerName', defaultValue: 'Jenkinsapp')
     }    
+    environment {
+        DOCKER_REGISTRY_CREDS = credentials('docker-registy-login')
+    }
 
     stages {
         stage('App code checkout') {
@@ -24,6 +27,13 @@ pipeline {
         stage('Build image') {
             steps {
                 sh "docker build -t ${params.ImageName}:${params.ImageTag} ."
+            }
+        }
+        stage('push to Registry'){
+            steps {
+                sh "docker login -u $DOCKER_REGISTRY_CREDS_USR -P $DOCKER_REGISTRY_CREDS_PSW "
+                sh " docker tag ${params.ImageName}:${params.ImageTag}  $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
+                sh " docker push   $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
             }
         }
 
