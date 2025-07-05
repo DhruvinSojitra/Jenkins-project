@@ -31,7 +31,7 @@ pipeline {
         }
         stage('push to Registry'){
             steps {
-                sh "docker login -u $DOCKER_REGISTRY_CREDS_USR -P $DOCKER_REGISTRY_CREDS_PSW "
+                sh "docker login -u $DOCKER_REGISTRY_CREDS_USR -p $DOCKER_REGISTRY_CREDS_PSW "
                 sh " docker tag ${params.ImageName}:${params.ImageTag}  $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
                 sh " docker push   $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
                 sh "docker rm -f ${params.ImageName}:${params.ImageTag}"
@@ -41,10 +41,11 @@ pipeline {
 
         stage('Run container') {
             steps {
-                 sh ""
-                    docker rm -f  ${params.ContainerName} 
+                 sh """
+                      docker stop ${params.ContainerName} || true
+                    docker rm -f  ${params.ContainerName} || true
                     docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params.ImageName}:${params.ImageTag}
-                ""     
+                """ 
                    }
         }
     }
