@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple web page</title>
-     <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Web Page</title>
+  <style>
     body {
       margin: 0;
       padding: 0;
@@ -23,6 +23,15 @@
       padding: 40px;
       border-radius: 16px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+    }
+
+    img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 3px solid white;
     }
 
     h1 {
@@ -32,7 +41,13 @@
 
     p {
       font-size: 1.2rem;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     button {
@@ -52,10 +67,15 @@
   </style>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
+    <img src="https://via.placeholder.com/150" alt="Profile Image">
     <h1>Welcome to My Website</h1>
     <p>This is a simple HTML and CSS example page.</p>
-    <button onclick="alert('Hello there!')">Click Me</button>
+    <div class="btn-group">
+      <button onclick="alert('Hello there!')">Click Me</button>
+      <button onclick="window.location.href='https://www.google.com'">Go to Google</button>
+      <button onclick="document.body.style.background = 'black'">Dark Mode</button>
+    </div>
   </div>
 </body>
 </html>
