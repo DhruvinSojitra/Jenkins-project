@@ -2,6 +2,10 @@ pipeline {
     agent{
         label 'devops'
     }
+    options{
+
+        buildDiscard(logRotater(numTokeepStr: '3'))
+    }
     parameters {
         string(name: 'ImageName', defaultValue: 'jenkinsapp')
         string(name: 'ImageTag', defaultValue: 'latest')
@@ -21,9 +25,8 @@ pipeline {
         }
         stage('container create') {
             steps{
-                sh "docker run -dit --name ${params.ContainerName} -p  ${params.ContainerPort}:80  ${params:ImageName}"
+                sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params:ImageName}"
             }
         }
     }
-
 }
