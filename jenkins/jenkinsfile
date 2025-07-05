@@ -2,16 +2,16 @@ pipeline {
     agent{
         label 'devops'
     }
-    options{
+    // options{
 
-        buildDiscard(logRotater(numTokeepStr: '3'))
-    }
-    parameters {
-        string(name: 'ImageName', defaultValue: 'jenkinsapp')
-        string(name: 'ImageTag', defaultValue: 'latest')
-        string(name: 'ContainerPort', defaultValue:'8088')
-        string(name: 'ContainerName', defaultValue: 'Jenkinsapp')
-    }    
+    //     buildDiscard(logRotater(numTokeepStr: '3'))
+    // }
+    // parameters {
+    //     string(name: 'ImageName', defaultValue: 'jenkinsapp')
+    //     string(name: 'ImageTag', defaultValue: 'latest')
+    //     string(name: 'ContainerPort', defaultValue:'8088')
+    //     string(name: 'ContainerName', defaultValue: 'Jenkinsapp')
+    // }    
     stages{
         stage('App code checkout'){
             steps{
@@ -23,10 +23,10 @@ pipeline {
                 sh "docker build -t ${params:ImageName}:${params.ImageTag} ."
             }
         }
-        stage('container create') {
-            steps{
-                sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params:ImageName}"
-            }
-        }
+        // stage('container create') {
+        //     steps{
+        //         sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params:ImageName}"
+        //     }
+        // }
     }
 }
