@@ -15,7 +15,7 @@ pipeline {
         }
         stage('container create') {
             steps{
-                sh 'docker run -sit --name jenkinsapp -p 8088:80 jenkinsapp:latest'
+                sh 'docker run -dit --name jenkinsapp -p 8088:80 jenkinsapp:latest'
             }
         }
     }
