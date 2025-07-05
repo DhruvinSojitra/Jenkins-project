@@ -29,8 +29,12 @@ pipeline {
 
         stage('Run container') {
             steps {
-                sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params.ImageName}:${params.ImageTag}"
-            }
+                 sh """
+                    docker stop ${params.ContainerName} || true
+                    docker rm ${params.ContainerName} || true
+                    docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params.ImageName}:${params.ImageTag}
+                """         
+                   }
         }
     }
 }
