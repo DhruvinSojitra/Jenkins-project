@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Build image'){
             steps{
-                sh 'docker build -t jenkins:latest .'
+                sh 'docker build -t jenkinsapp:latest .'
             }
         }
         stage('container create') {
