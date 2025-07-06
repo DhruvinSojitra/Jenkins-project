@@ -39,10 +39,10 @@ pipeline {
             }
         }
 
-        stage('Run container') {
+        stage('COntainer create') {
             steps {
-                 sh "  docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 ${params.ImageName}:${params.ImageTag} "
-             
+                sh "docker rm -f ${params.ContainerName}"
+                sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 $DOCKER_REGISTRY_CREDS_USR/${params:ImageName}:${params.ImageTag}"             
                    }
         }
     }
