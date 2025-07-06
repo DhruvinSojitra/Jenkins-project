@@ -10,40 +10,53 @@ pipeline {
     parameters {
         string(name: 'ImageName', defaultValue: 'jenkinsapp')
         string(name: 'ImageTag', defaultValue: 'latest')
-        string(name: 'ContainerPort', defaultValue:'8088')
-        string(name: 'ContainerName', defaultValue: 'Jenkinsapp')
-    }    
+        string(name: 'ContainerPort', defaultValue: '8088')
+        string(name: 'ContainerName', defaultValue: 'jenkinsapp')
+    }
+
     environment {
         DOCKER_REGISTRY_CREDS = credentials('docker-registy-login')
     }
 
     stages {
-        stage('App code checkout') {
+        stage('App Code Checkout') {
             steps {
-                git url: 'https://github.com/DhruvinSojitra/Jenkins-project.git', branch: 'main'
+                git url: 'https://github.com/prateekkumawat/jenkins-11am-project.git', branch: 'main'
             }
         }
 
-        stage('Build image') {
+        stage('Build Image') {
             steps {
-                sh "docker build -t ${params.ImageName}:${params.ImageTag} ."
-            }
-        }
-        stage('push to Registry'){
-            steps {
-                sh "docker login -u $DOCKER_REGISTRY_CREDS_USR -p $DOCKER_REGISTRY_CREDS_PSW "
-                sh " docker tag ${params.ImageName}:${params.ImageTag}  $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
-                sh " docker push   $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
-                sh "docker rmi -f ${params.ImageName}:${params.ImageTag}"
-                sh "docker rmi -f $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}"
+                withCredentials([usernamePassword(credentialsId: 'docker-registy-login', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker build -t ${params.ImageName}:${params.ImageTag} .
+                    """
+                }
             }
         }
 
-        stage('COntainer create') {
+        stage('Push To Registry') {
             steps {
-                sh "docker rm -f ${params.ContainerName}"
-                sh "docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 $DOCKER_REGISTRY_CREDS_USR/${params:ImageName}:${params.ImageTag}"             
-                   }
+                withCredentials([usernamePassword(credentialsId: 'docker-registy-login', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker tag ${params.ImageName}:${params.ImageTag} $DOCKER_USER/${params.ImageName}:${params.ImageTag}
+                        docker push $DOCKER_USER/${params.ImageName}:${params.ImageTag}
+                        docker rmi -f ${params.ImageName}:${params.ImageTag}
+                        docker rmi -f $DOCKER_USER/${params.ImageName}:${params.ImageTag}
+                    """
+                }
+            }
+        }
+
+        stage('Container Create') {
+            steps {
+                sh """
+                    docker rm -f ${params.ContainerName} || true
+                    docker run -dit --name ${params.ContainerName} -p ${params.ContainerPort}:80 $DOCKER_REGISTRY_CREDS_USR/${params.ImageName}:${params.ImageTag}
+                """
+            }
         }
     }
 }
